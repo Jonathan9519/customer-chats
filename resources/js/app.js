@@ -15,31 +15,7 @@ import { createApp } from 'vue';
  */
 
 const app = createApp({
-    props: ["user"],
-    data() {
-        return {
-            messages: [],
-        }
-    },
-
-    created() {
-        this.fetchMessages();
-        window.Echo.private('chat')
-            .listen('MessageSent', (e) => {
-                this.messages.push({
-                    message: e.message.message,
-                    user: e.user
-                });
-            });
-    },
     methods: {
-        fetchMessages() {
-            //GET request to the messages route in our Laravel server to fetch all the messages
-            axios.get('/messages').then(response => {
-                //Save the response in the messages array to display on the chat view
-                this.messages = response.data;
-            });
-        },
         //Receives the message that was emitted from the ChatForm Vue component
         addMessage(message) {
             //Pushes it to the messages array

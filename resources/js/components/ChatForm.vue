@@ -26,7 +26,11 @@ export default {
       newMessage: "",
     };
   },
+  created(){
+   
+  },
   methods: {
+    
     sendMessage() {
       //Emit a "messagesent" event including the user who sent the message along with the message content
       this.$emit("messagesent", {
