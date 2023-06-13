@@ -26,9 +26,6 @@ export default {
       newMessage: "",
     };
   },
-  created(){
-   
-  },
   methods: {
     
     sendMessage() {
@@ -38,9 +35,21 @@ export default {
       //newMessage is bound to the earlier "btn-input" input field
         message: this.newMessage,
       });
+      this.addMessage(this.newMessage)
       //Clear the input
       this.newMessage = "";
+      
     },
+
+    addMessage(message) {
+            //Pushes it to the messages array
+            let urlSplit =  window.location.href.split('/')[4];
+            let objectMessage = {message:message, owner_id: urlSplit}
+            //POST request to the messages route with the message data in order for our Laravel server to broadcast it.
+            axios.post('/messages', objectMessage).then(response => {
+                console.log(response.data);
+            });
+        }
   },
 };
 </script>

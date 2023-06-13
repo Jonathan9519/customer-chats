@@ -5,7 +5,7 @@
  */
 
 import './bootstrap';
-import '../css/app.css';
+import '../css/app.css'; 
 import { createApp } from 'vue';
 
 /**
@@ -14,19 +14,7 @@ import { createApp } from 'vue';
  * to use in your application's views. An example is included for you.
  */
 
-const app = createApp({
-    methods: {
-        //Receives the message that was emitted from the ChatForm Vue component
-        addMessage(message) {
-            //Pushes it to the messages array
-            this.messages.push(message);
-            //POST request to the messages route with the message data in order for our Laravel server to broadcast it.
-            axios.post('/messages', message).then(response => {
-                console.log(response.data);
-            });
-        }
-    }
-});
+const app = createApp();
 
 import ExampleComponent from './components/ExampleComponent.vue';
 import ChatMessages from './components/ChatMessages.vue';

@@ -13,7 +13,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSent implements ShoulBroadcast
+class MessageSent implements ShouldBroadcast
 {
     public $user;
     public $message;
@@ -39,7 +39,7 @@ class MessageSent implements ShoulBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('chat'),
+            new PrivateChannel('chat.' . $this->message->post_id)
         ];
     }
 }

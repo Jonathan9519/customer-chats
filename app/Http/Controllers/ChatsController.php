@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Message;
 use App\Events\MessageSent;
+use App\Models\Conversation;
 
 
 class ChatsController extends Controller
@@ -22,18 +23,36 @@ class ChatsController extends Controller
 
     public function fetchMessages(Request $request)
     {
-        return Message::with('user')->get();
+       $conversations = Conversation::where('sender_id','=', Auth::user()->id)
+       ->orWhere('receiver_id','=', Auth::user()->id)
+       ->get();
+    //    return $conversations->where('receiver_id', $request->route('owner_id'))->first()['id'];
+       if (sizeof($conversations) !== 0 && isset($conversations->where('receiver_id', $request->route('owner_id'))->first()['id'])) {
+        $conversation = $conversations->where('receiver_id', $request->route('owner_id'))->first();
+        $messages = Message::where('conversation_id', $conversation['id'])->with(['attachment', 'user'])->get();
+       
+        $conversation['messages'] = $messages;
+        return $conversation;
+       }
+       
+       return ['messages'=>[]];
+       
     }
 
     public function sendMessage(Request $request)
     {
         $user = Auth::user();
-        $message = $user->messages()->create([
-            'message' => $request->input('message')
-        ]);
 
+        $conversation = Conversation::firstOrCreate(['sender_id'=>Auth::user()['id'], 'receiver_id'=>$request->input('owner_id')]);
+
+        $message = new Message();
+        $message->message = $request->input('message');
+        $message->conversation_id = $conversation->id;
+        $message->user_id = $user->id;
+        $message->attachment = null;
+        $message->save();
         broadcast(new MessageSent($user, $message))->toOthers();
 
-        return ['status' => 'Message Sent!'];
+        return ['status' => 'message sent'];
     }
 }
