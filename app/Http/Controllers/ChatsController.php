@@ -23,21 +23,11 @@ class ChatsController extends Controller
 
     public function fetchMessages(Request $request)
     {
-        $user = Auth::user();
-        $conversations = Conversation::where('sender_id','=', $request->route('user_id'))
-        ->orWhere('receiver_id','=', $request->route('user_id'))
-        ->get();
-    //    return $conversations->where('receiver_id', $request->route('owner_id'))->first()['id'];
-       if (sizeof($conversations) !== 0 && isset($conversations->where('receiver_id', $request->route('owner_id'))->first()['id'])) {
-        $conversation = $conversations->where('receiver_id', $request->route('owner_id'))->first();
+        $conversation = Conversation::firstOrCreate(['sender_id'=> $request->route('user_id'), 'receiver_id'=> $request->route('owner_id')]);
         $messages = Message::where('conversation_id', $conversation['id'])->with(['attachment', 'user'])->get();
        
         $conversation['messages'] = $messages;
         return $conversation;
-       }
-       
-       return ['messages'=>[]];
-       
     }
 
     public function fetchConversations(Request $request)
@@ -53,14 +43,7 @@ class ChatsController extends Controller
     {
         $user = Auth::user();
 
-       if($user->user_type === 'buyer'){
-        $conversation = Conversation::firstOrCreate(['sender_id'=>Auth::user()['id'], 'receiver_id'=>$request->input('owner_id')]);
-       }else{
-        $conversations = Conversation::where('sender_id','=', Auth::user()->id)
-       ->orWhere('receiver_id','=', Auth::user()->id)
-       ->get();
-       $conversation = $conversations->where('receiver_id', $request->input('owner_id'))->first();
-       }
+        $conversation = Conversation::firstOrCreate(['sender_id'=> $request->input('user_id'), 'receiver_id'=>$request->input('owner_id')]);
 
         $message = new Message();
         $message->message = $request->input('message');

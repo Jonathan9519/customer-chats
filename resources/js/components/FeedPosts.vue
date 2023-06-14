@@ -21,7 +21,7 @@ export default {
                     id: 1,
                     title: 'Aprende a hacer muebles',
                     content: 'Contenido de la publicación 1',
-                    owner_id: '2'
+                    owner_id: '2',
                 },
                 {
                     id: 2,
