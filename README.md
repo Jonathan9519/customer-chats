@@ -93,3 +93,12 @@ php artisan serve
 npm run dev
 ```
 3. Accede a la aplicación en tu navegador web en la dirección http://127.0.0.1:8000.
+
+## Caracteristicas extras
+
+ - Base de datos clientes y prospectos
+ - Posibilidad de habilitar Chatbot con respuestas automaticas
+ - Interfaz para visualizar unicamente los archivos adjuntos del chat
+ - Poder descargar los archivos si fuera necesario
+ - Editar mensajes
+ - Citar mensajes (Como whatsapp, Instagram, Messegenger)
