@@ -20,6 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/chat/{conversation_id}', [App\Http\Controllers\ChatsController::class, 'index']);
-Route::get('/messages/{owner_id}', [App\Http\Controllers\ChatsController::class, 'fetchMessages']);
+Route::get('/chat/{owner_id}/{user_id}', [App\Http\Controllers\ChatsController::class, 'index']);
+Route::get('/messages/{owner_id}/{user_id}', [App\Http\Controllers\ChatsController::class, 'fetchMessages']);
+Route::get('/convesations', [App\Http\Controllers\ChatsController::class, 'fetchConversations']);
 Route::post('/messages', [App\Http\Controllers\ChatsController::class, 'sendMessage']);

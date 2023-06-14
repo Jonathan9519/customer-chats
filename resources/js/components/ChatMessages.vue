@@ -1,48 +1,51 @@
 <template>
-  <ul class="chat">
-    <li class="left clearfix" v-for="message in messages" :key="message.id">
-      <div class="clearfix">
-        <div class="header">
-          <strong>
-            {{ message.user.name }}
-          </strong>
-        </div>
-        <p>
+  <div class="flex-col w-full">
+    <div class="p-4">
+      <div v-for="message in messages" :key="message.id" class="flex my-2 w-full">
+        <div
+          :class="['px-4 py-2 rounded-lg w-fit ', message.user_id === this.user.id ? 'ml-auto bg-blue-500 text-white' : 'mr-auto bg-gray-300']">
+          <div class="w-full">
+            <strong>
+              {{ message.user.name }}
+            </strong>
+          </div>
           {{ message.message }}
-        </p>
+        </div>
       </div>
-    </li>
-  </ul>
+    </div>
+  </div>
 </template>
 <script>
 export default {
-  data(){
+  props: ["user"],
+  data() {
     return {
-        messages: []
+      messages: []
     }
   },
-  created (){
+  created() {
     this.fetchMessages();
   },
-  mounted() {
-        this.subscribeToChannel();
-    },
   methods: {
     fetchMessages() {
-            //GET request to the messages route in our Laravel server to fetch all the messages
-            let urlSplit =  window.location.href.split('/')[4];
-            // let idOwner = urlSplit;
-            axios.get(`/messages/${urlSplit}`).then(response => {
-                //Save the response in the messages array to display on the chat view
-                this.messages = response.data.messages;
-            });
-        },
+      let owner_id = window.location.href.split('/')[4];
+      let user_id = window.location.href.split('/')[5];
+      axios.get(`/messages/${owner_id}/${user_id}`).then(response => {
+        this.messages = response.data.messages;
+      });
+      window.Echo.private(`chat.${owner_id}.${user_id}`)
+      .listen('MessageSent', (e) => {
+        console.log('event-> ', e);
+        this.messages.push({
+          user_id: e.message.user_id,
+          message: e.message.message,
+          user: e.user
+        });
+      });
+    },
   },
-  subscribeToChannel() {
-            this.channel = this.echo.channel('chat.' + this.post.id);
-            this.channel.listen('.message.created', (message) => {
-                this.messages.push(message);
-            });
-        },
 };
 </script>
+
+
+

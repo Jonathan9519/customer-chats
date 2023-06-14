@@ -19,12 +19,14 @@ const app = createApp();
 import ExampleComponent from './components/ExampleComponent.vue';
 import ChatMessages from './components/ChatMessages.vue';
 import ChatForm from './components/ChatForm.vue';
-import PostsFeed from './components/PostsFeed.vue';
+import FeedPosts from './components/FeedPosts.vue';
+import Conversations from './components/Conversations.vue';
 
 app.component('example-component', ExampleComponent);
 
 app.component('chat-messages', ChatMessages);
 app.component('chat-form', ChatForm);
-app.component('posts-feed', PostsFeed);
+app.component('posts-feed', FeedPosts);
+app.component('conversations', Conversations);
 
 app.mount('#app')

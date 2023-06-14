@@ -11,10 +11,9 @@
         </div>
     </div>
 </template>
-
 <script>
 export default {
-    name: 'FeedPublicaciones',
+    props: ['user'],
     data() {
         return {
             posts: [
@@ -43,7 +42,7 @@ export default {
         openChat(user) {
             // Lógica para abrir una conversación con el usuario
             let uid = user.owner_id;
-            window.location.href = `/chat/${uid}`;
+            window.location.href = `/chat/${uid}/${this.user.id}`;
         }
     }
 }

@@ -23,9 +23,10 @@ class ChatsController extends Controller
 
     public function fetchMessages(Request $request)
     {
-       $conversations = Conversation::where('sender_id','=', Auth::user()->id)
-       ->orWhere('receiver_id','=', Auth::user()->id)
-       ->get();
+        $user = Auth::user();
+        $conversations = Conversation::where('sender_id','=', $request->route('user_id'))
+        ->orWhere('receiver_id','=', $request->route('user_id'))
+        ->get();
     //    return $conversations->where('receiver_id', $request->route('owner_id'))->first()['id'];
        if (sizeof($conversations) !== 0 && isset($conversations->where('receiver_id', $request->route('owner_id'))->first()['id'])) {
         $conversation = $conversations->where('receiver_id', $request->route('owner_id'))->first();
@@ -39,11 +40,27 @@ class ChatsController extends Controller
        
     }
 
+    public function fetchConversations(Request $request)
+    {
+        $user = Auth::user();
+        $conversations = Conversation::Where('receiver_id','=', $user->id)->with('sender')
+        ->get();
+       
+       return $conversations;
+    }
+
     public function sendMessage(Request $request)
     {
         $user = Auth::user();
 
+       if($user->user_type === 'buyer'){
         $conversation = Conversation::firstOrCreate(['sender_id'=>Auth::user()['id'], 'receiver_id'=>$request->input('owner_id')]);
+       }else{
+        $conversations = Conversation::where('sender_id','=', Auth::user()->id)
+       ->orWhere('receiver_id','=', Auth::user()->id)
+       ->get();
+       $conversation = $conversations->where('receiver_id', $request->input('owner_id'))->first();
+       }
 
         $message = new Message();
         $message->message = $request->input('message');
@@ -51,8 +68,9 @@ class ChatsController extends Controller
         $message->user_id = $user->id;
         $message->attachment = null;
         $message->save();
-        broadcast(new MessageSent($user, $message))->toOthers();
 
-        return ['status' => 'message sent'];
+        broadcast(new MessageSent($user, $message, $conversation))->toOthers();
+
+        return ['status' => 'Message Sent!'];
     }
 }

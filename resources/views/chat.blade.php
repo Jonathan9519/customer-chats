@@ -4,7 +4,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">Chats</div>
-        <div class="panel-body">
+        <div class="w-full">
                     <chat-messages :user="{{ Auth::user() }}"></chat-messages>
                 </div>
                 <div class="panel-footer">

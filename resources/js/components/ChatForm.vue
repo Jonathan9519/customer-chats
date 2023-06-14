@@ -29,12 +29,6 @@ export default {
   methods: {
     
     sendMessage() {
-      //Emit a "messagesent" event including the user who sent the message along with the message content
-      this.$emit("messagesent", {
-        user: this.user,
-      //newMessage is bound to the earlier "btn-input" input field
-        message: this.newMessage,
-      });
       this.addMessage(this.newMessage)
       //Clear the input
       this.newMessage = "";

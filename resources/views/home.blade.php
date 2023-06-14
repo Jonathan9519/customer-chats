@@ -14,7 +14,11 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                      <posts-feed></posts-feed>
+                    @if (Auth::user()->user_type === 'buyer')
+                      <posts-feed :user="{{ Auth::user() }}"></posts-feed>
+                      @else
+                      <conversations :user="{{ Auth::user() }}"></conversations>
+                      @endif
                 </div>
             </div>
         </div>
